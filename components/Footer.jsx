@@ -39,6 +39,13 @@ export default function Footer() {
           </div>
           <div className="footer-bottom">
             <span>© 2026 metierRef · Référentiel Commun RTMC 🇹🇳 &amp; ESCO 🇪🇺</span>
+            <a href="/admin/login" className="footer-admin-link" title="Accès réservé aux administrateurs">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0110 0v4"/>
+              </svg>
+              Espace administrateur
+            </a>
           </div>
         </div>
       </footer>
