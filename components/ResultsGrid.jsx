@@ -7,7 +7,7 @@ export default function ResultsGrid() {
     <section className="results-section" id="results-section">
       <div className="container">
         
-        {/* SiRY-Inspired Dashboard KPI Summary Cards Bar */}
+        {/* Dashboard KPI Summary Cards Bar */}
         <div className="siry-kpi-grid">
           <div className="siry-kpi-card total" id="kpi-card-all">
             <div className="siry-kpi-header">
@@ -15,25 +15,25 @@ export default function ResultsGrid() {
               <span className="siry-kpi-icon blue">📁</span>
             </div>
             <div className="siry-kpi-value" id="kpi-total-jobs">3 468</div>
-            <span className="siry-kpi-sub">Catalogue RTMC &amp; ESCO unifié</span>
+            <span className="siry-kpi-sub">Catalogue officiel unifié</span>
           </div>
 
-          <div className="siry-kpi-card rtmc" id="kpi-card-rtmc">
+          <div className="siry-kpi-card rtmc" id="kpi-card-domaines">
             <div className="siry-kpi-header">
-              <span className="siry-kpi-title">Référentiel RTMC 🇹🇳</span>
-              <span className="siry-kpi-icon green">✓</span>
+              <span className="siry-kpi-title">Domaines Professionnels</span>
+              <span className="siry-kpi-icon green">📂</span>
             </div>
-            <div className="siry-kpi-value" id="kpi-rtmc-jobs">530</div>
-            <span className="siry-kpi-sub">Métiers nationaux tunisiens</span>
+            <div className="siry-kpi-value" id="kpi-domaines">85+</div>
+            <span className="siry-kpi-sub">Secteurs d'activité couverts</span>
           </div>
 
-          <div className="siry-kpi-card esco" id="kpi-card-esco">
+          <div className="siry-kpi-card esco" id="kpi-card-passerelles">
             <div className="siry-kpi-header">
-              <span className="siry-kpi-title">Référentiel ESCO 🇪🇺</span>
-              <span className="siry-kpi-icon orange">🌐</span>
+              <span className="siry-kpi-title">Passerelles Mobilité</span>
+              <span className="siry-kpi-icon orange">🔄</span>
             </div>
-            <div className="siry-kpi-value" id="kpi-esco-jobs">2 938</div>
-            <span className="siry-kpi-sub">Métiers standards européens</span>
+            <div className="siry-kpi-value" id="kpi-passerelles">4 500+</div>
+            <span className="siry-kpi-sub">Correspondances de carrière</span>
           </div>
 
           <div className="siry-kpi-card skills" id="kpi-card-skills">
@@ -41,7 +41,7 @@ export default function ResultsGrid() {
               <span className="siry-kpi-title">Compétences Indexées</span>
               <span className="siry-kpi-icon slate">⚡</span>
             </div>
-            <div className="siry-kpi-value">12 400+</div>
+            <div className="siry-kpi-value">14 200+</div>
             <span className="siry-kpi-sub">Savoirs, savoir-faire &amp; soft skills</span>
           </div>
         </div>

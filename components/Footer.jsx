@@ -21,7 +21,7 @@ export default function Footer() {
                 <span className="brand-logo">M</span>
                 <strong>metierRef</strong>
               </div>
-              <p data-i18n="footer_desc">Plateforme commune d'exploration et d'orientation combinant le RTMC (Tunisie 🇹🇳) et l'ESCO (Europe 🇪🇺).</p>
+              <p data-i18n="footer_desc">Plateforme d'exploration et d'orientation professionnelle basée sur un référentiel unifié des métiers et compétences.</p>
             </div>
             <div>
               <h4>Navigation</h4>
@@ -31,14 +31,14 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h4 data-i18n="footer_sources">Sources</h4>
+              <h4 data-i18n="footer_sources">Référentiel</h4>
               <p style={{ fontSize: '13px', lineHeight: 1.6, opacity: 0.7 }} data-i18n="footer_legal">
-                Données officielles ANETI / RTMC Tunisie &amp; Commission Européenne / ESCO.
+                Base propriétaire unifiée des métiers, compétences clés et grilles de qualification.
               </p>
             </div>
           </div>
           <div className="footer-bottom">
-            <span>© 2026 metierRef · Référentiel Commun RTMC 🇹🇳 &amp; ESCO 🇪🇺</span>
+            <span>© 2026 metierRef · Référentiel National des Métiers &amp; Compétences</span>
             <a href="/admin/login" className="footer-admin-link" title="Accès réservé aux administrateurs">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>

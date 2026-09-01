@@ -1,8 +1,8 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'metierRef | Référentiel Commun RTMC (Tunisie 🇹🇳) & ESCO (Europe 🇪🇺)',
-  description: "Plateforme commune d'orientation et de compétences combinant 530 métiers RTMC (Tunisie) et 2 938 métiers ESCO (Europe).",
+  title: 'metierRef | Référentiel National des Métiers & Compétences',
+  description: "Plateforme d'exploration des métiers, cartographie des compétences, passerelles professionnelles et grilles salariales.",
 };
 
 export default function RootLayout({ children }) {

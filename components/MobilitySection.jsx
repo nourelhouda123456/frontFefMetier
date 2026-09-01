@@ -17,12 +17,12 @@ export default function MobilitySection() {
             </span>
             <h2 className="mobility-section-title">Matrice de Mobilité et Analyse d'Adéquation</h2>
             <p className="mobility-section-desc">
-              Évaluez la transférabilité des compétences entre deux métiers du RTMC (Tunisie 🇹🇳) et de l'ESCO (Europe 🇪🇺), mesurez le taux de recouvrement et identifiez les compétences clés à développer.
+              Évaluez la transférabilité des compétences entre deux métiers du référentiel, mesurez le taux de recouvrement et identifiez les compétences clés à développer.
             </p>
           </div>
           <div className="mobility-section-header-right">
-            <div className="mobility-stat-pill">🇹🇳 530 métiers RTMC</div>
-            <div className="mobility-stat-pill">🇪🇺 2 938 métiers ESCO</div>
+            <div className="mobility-stat-pill">💼 3 340+ Métiers</div>
+            <div className="mobility-stat-pill">🎯 4 500+ Passerelles</div>
           </div>
         </div>
 

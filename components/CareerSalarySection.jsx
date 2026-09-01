@@ -18,7 +18,7 @@ export default function CareerSalarySection() {
           </div>
           <h2 className="career-salary-title">Grille des Niveaux et Rémunérations Prévisionnelles</h2>
           <p className="career-salary-desc">
-            Consultez les estimations salariales, les paliers de qualification et les compétences attendues par niveau d'expérience selon les référentiels officiels RTMC (Tunisie) et ESCO (Europe).
+            Consultez les estimations salariales, les paliers de qualification et les compétences attendues par niveau d'expérience selon le référentiel officiel unifié.
           </p>
           
           {/* Quick Info Pills */}
@@ -36,7 +36,7 @@ export default function CareerSalarySection() {
           {/* Row 1: Job Selection */}
           <div className="career-sim-field-group">
             <label htmlFor="career-salary-input">
-              <span className="career-field-step">1</span> Sélection du métier de référence (RTMC / ESCO)
+              <span className="career-field-step">1</span> Sélection du métier de référence
             </label>
             <div className="career-input-wrap">
               <input type="text" id="career-salary-input" placeholder="Rechercher par intitulé ou code métier (ex : Développeur web, Infirmier, Comptable, A1101...)" autoComplete="off" />

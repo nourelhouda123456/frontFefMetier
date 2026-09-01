@@ -8,10 +8,10 @@ export default function Hero() {
       <div className="hero-grid-overlay"></div>
       <div className="hero-content">
         
-        {/* Capsule Badge avec les couleurs harmonisées */}
+        {/* Capsule Badge */}
         <div className="hero-badge">
           <span className="badge-dot"></span>
-          <span data-i18n="hero_badge">🇹🇳 RTMC (Tunisie) &amp; 🇪🇺 ESCO (Europe) · Référentiel Commun</span>
+          <span data-i18n="hero_badge">Référentiel National des Métiers &amp; Compétences</span>
         </div>
 
         {/* Titre authentique avec touche de couleur harmonisée */}
@@ -20,17 +20,8 @@ export default function Hero() {
         </h1>
         
         <p className="hero-subtitle">
-          Explorez les métiers, les compétences et les passerelles des référentiels RTMC (Tunisie 🇹🇳) et ESCO (Europe 🇪🇺).
+          Explorez les métiers, les compétences clés et les passerelles de carrière au sein du référentiel unifié.
         </p>
-
-        {/* REFERENTIAL SOURCE FILTER TABS */}
-        <div className="hero-source-filter">
-          <div className="source-filter-tabs" id="source-filter-tabs">
-            <button className="source-tab active" data-source="all">🌐 Tous <span className="tab-count" id="count-all">3 468</span></button>
-            <button className="source-tab" data-source="rtmc">🇹🇳 RTMC <span className="tab-count" id="count-rtmc">530</span></button>
-            <button className="source-tab" data-source="esco">🇪🇺 ESCO <span className="tab-count" id="count-esco">2 938</span></button>
-          </div>
-        </div>
 
         {/* SEARCH BAR UNIFIED (Filter + Search) */}
         <div className="search-wrap unified-search-wrap" id="search-wrap">

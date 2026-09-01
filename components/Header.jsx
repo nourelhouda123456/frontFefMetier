@@ -20,7 +20,7 @@ export default function Header() {
           <span className="brand-logo">M</span>
           <div className="brand-text">
             <strong>metierRef</strong>
-            <small>Plateforme Commune RTMC 🇹🇳 &amp; ESCO 🇪🇺</small>
+            <small>Référentiel National des Métiers &amp; Compétences</small>
           </div>
         </a>
         

@@ -41,7 +41,7 @@ export default function Modals() {
       <button className="chat-fab" id="chat-widget-trigger" aria-label="Assistant IA">💬</button>
       <div className="chat-window" id="chat-widget-window">
         <div className="chat-header">
-          <span>Assistant IA RTMC</span>
+          <span>Assistant IA Métiers</span>
           <button id="chat-widget-close">✕</button>
         </div>
         <div className="chat-messages" id="chat-widget-messages">
