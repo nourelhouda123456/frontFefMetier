@@ -5,13 +5,23 @@ import React from 'react';
 export default function Hero() {
   return (
     <section className="hero-band" id="explore-zone">
+      <div className="hero-grid-overlay"></div>
       <div className="hero-content">
+        
+        {/* Capsule Badge avec les couleurs harmonisées */}
         <div className="hero-badge">
           <span className="badge-dot"></span>
           <span data-i18n="hero_badge">🇹🇳 RTMC (Tunisie) &amp; 🇪🇺 ESCO (Europe) · Référentiel Commun</span>
         </div>
-        <h1 data-i18n="hero_title">Découvrez le métier qui vous correspond</h1>
-        <p data-i18n="hero_subtitle">Explorez les métiers, les compétences et les passerelles des référentiels RTMC (Tunisie 🇹🇳) et ESCO (Europe 🇪🇺).</p>
+
+        {/* Titre authentique avec touche de couleur harmonisée */}
+        <h1 className="hero-title">
+          Découvrez le <span className="hero-title-highlight">métier qui vous correspond</span>
+        </h1>
+        
+        <p className="hero-subtitle">
+          Explorez les métiers, les compétences et les passerelles des référentiels RTMC (Tunisie 🇹🇳) et ESCO (Europe 🇪🇺).
+        </p>
 
         {/* REFERENTIAL SOURCE FILTER TABS */}
         <div className="hero-source-filter">
