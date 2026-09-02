@@ -1,7 +1,7 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'metierRef | Référentiel National des Métiers & Compétences',
+  title: 'metierRef | Référentiel des Métiers & Compétences',
   description: "Plateforme d'exploration des métiers, cartographie des compétences, passerelles professionnelles et grilles salariales.",
 };
 

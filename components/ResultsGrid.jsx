@@ -15,7 +15,7 @@ export default function ResultsGrid() {
               <span className="siry-kpi-icon blue">📁</span>
             </div>
             <div className="siry-kpi-value" id="kpi-total-jobs">3 346</div>
-            <span className="siry-kpi-sub">Référentiel RTMC (Tunisie 🇹🇳)</span>
+            <span className="siry-kpi-sub">Catalogue officiel des métiers</span>
           </div>
 
           <div className="siry-kpi-card rtmc" id="kpi-card-domaines">

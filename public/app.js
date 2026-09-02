@@ -6,7 +6,7 @@ function initMetierRefApp() {
   // ─── State ─────────────────────────────────────────────────────────
   window.allMetiers   = [];
   window.allSkills    = [];
-  window.comparedJobs = JSON.parse(localStorage.getItem('rtmc_compared') || '[]');
+  window.comparedJobs = JSON.parse(localStorage.getItem('metierref_compared') || '[]');
   window.currentLang  = 'fr';
 
   let selectedDomain    = null;
@@ -91,22 +91,22 @@ function initMetierRefApp() {
       nav_home:'Accueil', nav_skills:'Compétences', nav_salary:'Niveaux et Rémunérations IA', nav_mobility:'Mobilité & Reconversion', nav_about:'À propos',
       btn_explore:'Explorer les métiers', btn_search:'Rechercher',
       btn_discover_skills:'Découvrir les compétences', btn_clear:'✕ Effacer les filtres',
-      hero_badge:'🇹🇳 Référentiel National des Métiers et Compétences (RTMC)',
+      hero_badge:' Référentiel des Métiers et Compétences',
       hero_title:'Découvrez le métier qui vous correspond',
-      hero_subtitle:'Explorez les métiers, les compétences et les passerelles de carrière au sein du référentiel officiel RTMC (Tunisie 🇹🇳).',
-      search_placeholder:'Rechercher un métier, une compétence, un code (RTMC)…',
+      hero_subtitle:'Explorez les métiers, les compétences et les passerelles de carrière au sein de notre référentiel officiel.',
+      search_placeholder:'Rechercher un métier, une compétence, un code…',
       sectors_title:'Explorez par grand domaine', sectors_subtitle:'Cliquez sur un secteur pour filtrer les métiers.',
-      jobs_title:'Découvrez les métiers', jobs_subtitle:'Répertoire officiel des métiers RTMC (Tunisie 🇹🇳).',
+      jobs_title:'Découvrez les métiers', jobs_subtitle:'Répertoire officiel des fiches métiers et compétences.',
       jobs_count_suffix:' métiers disponibles',
-      card_skills_count:'compétences', card_salary_est:'TND / mois', card_salary_note:'*Basé sur données INS 2022',
+      card_skills_count:'compétences', card_salary_est:'/ mois', card_salary_note:'*Estimation indicative',
       skills_title:'Les compétences au cœur de l\'orientation',
       skills_subtitle:'Cliquez sur une compétence pour filtrer les métiers associés.',
-      demo_title:'Comprendre une fiche métier RTMC & ESCO',
-      demo_subtitle:'Structure des informations des référentiels RTMC (Tunisie 🇹🇳) et ESCO (Europe 🇪🇺).',
+      demo_title:'Comprendre une fiche métier',
+      demo_subtitle:'Structure des informations contenues dans chaque fiche du référentiel.',
       cta_footer_title:'Votre prochaine opportunité commence par une découverte',
       cta_footer_text:'Explorez les métiers et découvrez les compétences qui façonnent le monde professionnel.',
-      footer_desc:'Plateforme commune d\'exploration et d\'orientation combinant le RTMC (Tunisie 🇹🇳) et l\'ESCO (Europe 🇪🇺).',
-      footer_sources:'Sources', footer_legal:'Données officielles ANETI / RTMC Tunisie & Commission Européenne / ESCO.',
+      footer_desc:'Plateforme d\'exploration et d\'orientation professionnelle. Consultez les fiches métiers, compétences et grilles salariales.',
+      footer_sources:'À propos', footer_legal:'Données officielles des métiers, compétences clés et grilles de qualification.',
       toast_added:'Métier ajouté au comparateur.', toast_removed:'Métier retiré.',
       toast_max:'Maximum 3 métiers dans le comparateur.',
       btn_compare_label:'Comparer', btn_compare_remove:'Retirer',
@@ -120,22 +120,22 @@ function initMetierRefApp() {
       nav_home:'Home', nav_skills:'Skills', nav_salary:'Levels & Salaries AI', nav_mobility:'Mobility & Career Shift', nav_about:'About',
       btn_explore:'Explore Careers', btn_search:'Search',
       btn_discover_skills:'Discover Skills', btn_clear:'✕ Clear filters',
-      hero_badge:'🇹🇳 RTMC (Tunisia) & 🇪🇺 ESCO (Europe) · Joint Framework',
+      hero_badge:'✅ Official Career & Skills Framework',
       hero_title:'Discover the career that matches you',
-      hero_subtitle:'Explore careers, skills, and pathways across Tunisian (RTMC 🇹🇳) and European (ESCO 🇪🇺) frameworks.',
-      search_placeholder:'Search for a career, skill, or code (RTMC / ESCO)…',
+      hero_subtitle:'Explore careers, skills, and pathways across our official career framework.',
+      search_placeholder:'Search for a career, skill, or code…',
       sectors_title:'Explore by Sector', sectors_subtitle:'Click a sector to filter careers.',
-      jobs_title:'Discover Careers', jobs_subtitle:'Unified official career sheets from RTMC (Tunisia 🇹🇳) and ESCO (Europe 🇪🇺).',
+      jobs_title:'Discover Careers', jobs_subtitle:'Official career sheets and competency framework.',
       jobs_count_suffix:' careers available',
-      card_skills_count:'skills', card_salary_est:'TND / month', card_salary_note:'*Based on INS 2022 data',
+      card_skills_count:'skills', card_salary_est:'/ month', card_salary_note:'*Indicative estimate',
       skills_title:'Skills at the Heart of Orientation',
       skills_subtitle:'Click on a skill to filter associated careers.',
-      demo_title:'Understanding an RTMC & ESCO Career Sheet',
-      demo_subtitle:'Information structure from RTMC (Tunisia 🇹🇳) and ESCO (Europe 🇪🇺) frameworks.',
+      demo_title:'Understanding a Career Sheet',
+      demo_subtitle:'Information structure from each career sheet in the official framework.',
       cta_footer_title:'Your next opportunity begins with a discovery',
       cta_footer_text:'Explore careers and discover skills that shape the professional world.',
-      footer_desc:'Unified platform for career exploration combining RTMC (Tunisia 🇹🇳) and ESCO (Europe 🇪🇺).',
-      footer_sources:'Sources', footer_legal:'Official ANETI / RTMC Tunisia & European Commission / ESCO data.',
+      footer_desc:'Career exploration and guidance platform. Browse career sheets, skills, and salary grids.',
+      footer_sources:'About', footer_legal:'Official career data, key competencies and qualification grids.',
       toast_added:'Career added to comparison.', toast_removed:'Career removed.',
       toast_max:'Maximum 3 careers in comparator.',
       btn_compare_label:'Compare', btn_compare_remove:'Remove',
@@ -510,8 +510,8 @@ function initMetierRefApp() {
 
     slice.forEach((item, idx) => {
       const isEsco = item.source === 'esco' || (item.code && item.code.startsWith('ESCO')) || (item.url && item.url.includes('esco'));
-      const badgeText = isEsco ? '🇪🇺 ESCO' : '🇹🇳 RTMC';
-      const badgeClass = isEsco ? 'chat-badge-esco' : 'chat-badge-rtmc';
+      const badgeText = isEsco ? '📋 Fiche' : '📋 Fiche';
+      const badgeClass = isEsco ? 'chat-badge-rtmc' : 'chat-badge-rtmc';
 
       const sal = getSalaryRange(item);
       const totalSkills = (item.competencesTechniquesSavoirFaire||item.essentialSkills||[]).length
@@ -542,20 +542,21 @@ function initMetierRefApp() {
 
           <div class="job-card-chips">
             <span class="chip chip-skills">⚡ ${totalSkills} ${d.card_skills_count}</span>
-            <span class="chip chip-salary">${isEsco ? '🌐 Europe' : `💰 ${sal.min}–${sal.max} TND*`}</span>
+            <span class="chip chip-salary">${`💰 ${sal.min}–${sal.max} / mois`}</span>
           </div>
 
           <div class="job-card-actions">
-            <button class="btn-card-detail" data-url="${esc(item.url)}">${d.btn_details}</button>
-            <button class="btn-card-compare" data-url="${esc(item.url)}" title="${d.btn_compare_label}">⚖</button>
+            <button class="btn-card-detail" data-key="${esc(item._id || item.url || '')}">${d.btn_details}</button>
+            <button class="btn-card-compare" data-key="${esc(item._id || item.url || '')}" title="${d.btn_compare_label}">⚖</button>
           </div>
         </div>
       `;
 
-      card.querySelector('.btn-card-detail').addEventListener('click', () => openDrawer(item.url));
+      card.querySelector('.btn-card-detail').addEventListener('click', () => openDrawer(item._id || item.url));
       const cb = card.querySelector('.btn-card-compare');
-      if (window.comparedJobs.includes(item.url)) cb.classList.add('active');
-      cb.addEventListener('click', e => { e.stopPropagation(); toggleCompare(item.url, cb); });
+      const itemKey = String(item._id || item.url || '');
+      if (window.comparedJobs.includes(itemKey)) cb.classList.add('active');
+      cb.addEventListener('click', e => { e.stopPropagation(); toggleCompare(itemKey, cb); });
 
       grid.appendChild(card);
     });
@@ -710,7 +711,7 @@ function initMetierRefApp() {
       </div>
     `;
 
-    $('#btn-demo-details').addEventListener('click', () => openDrawer(job.url));
+    $('#btn-demo-details').addEventListener('click', () => openDrawer(job._id || job.url));
   }
 
   // ─── Search autocomplete ───────────────────────────────────────────
@@ -783,7 +784,7 @@ function initMetierRefApp() {
         div.addEventListener('click', () => {
           input.value = m.titre;
           drop.classList.remove('open');
-          openDrawer(m.url);
+          openDrawer(m._id || m.url);
         });
         drop.appendChild(div);
       });
@@ -857,12 +858,16 @@ function initMetierRefApp() {
   }
 
   // ─── Drawer ────────────────────────────────────────────────────────
-  async function openDrawer(url) {
+  async function openDrawer(key) {
     const overlay = $('#job-drawer');
     const content = $('#drawer-content');
     if (!overlay || !content) return;
 
-    const metier = window.allMetiers.find(m => m.url === url);
+    // Chercher par _id (priorité) puis par url
+    const metier = window.allMetiers.find(m =>
+      (m._id && String(m._id) === String(key)) ||
+      (m.url && m.url === key)
+    );
     if (!metier) { showToast('Fiche introuvable.', 'error'); return; }
 
     overlay.classList.add('open');
@@ -929,7 +934,7 @@ function initMetierRefApp() {
               <!-- Identity Header Card -->
               <div class="formal-doc-header">
                 <div class="formal-doc-meta">
-                  <span class="formal-doc-badge">${isEsco ? '🇪🇺 RÉFÉRENTIEL EUROPÉEN ESCO' : '🇹🇳 RÉFÉRENTIEL NATIONAL TUNISIEN (RTMC)'}</span>
+                  <span class="formal-doc-badge">📋 FICHE MÉTIER</span>
                   <span class="formal-doc-code">CODE : <strong>${esc(metier.code)}</strong></span>
                 </div>
 
@@ -942,7 +947,7 @@ function initMetierRefApp() {
                 </div>
 
                 <div class="formal-doc-actions">
-                  <a href="${esc(metier.url)}" target="_blank" rel="noreferrer" class="btn-formal-outline">📄 Fiche Officielle ANETI / ESCO ↗</a>
+                  <a href="${esc(metier.url)}" target="_blank" rel="noreferrer" class="btn-formal-outline">📄 Voir la fiche officielle ↗</a>
                   <button class="btn-formal-primary btn-drawer-compare" data-url="${esc(metier.url)}">⚖ ${d.btn_compare_label}</button>
                 </div>
               </div>
@@ -1204,7 +1209,7 @@ function initMetierRefApp() {
 
           <!-- Footer -->
           <div class="formal-doc-footer">
-            <span>Référentiel Officiel RTMC / ESCO — Document généré par metierRef</span>
+            <span>Document officiel — metierRef</span>
             <span>Édition 2026</span>
           </div>
 
@@ -1231,8 +1236,8 @@ function initMetierRefApp() {
       // Compare button
       const cmpBtn = content.querySelector('.btn-drawer-compare');
       if (cmpBtn) {
-        if (window.comparedJobs.includes(metier.url)) cmpBtn.textContent = `⚖ ${T[window.currentLang].btn_compare_remove}`;
-        cmpBtn.addEventListener('click', () => toggleCompare(metier.url, cmpBtn));
+        if (window.comparedJobs.includes(String(metier._id || metier.url || ''))) cmpBtn.textContent = `⚖ ${T[window.currentLang].btn_compare_remove}`;
+        cmpBtn.addEventListener('click', () => toggleCompare(String(metier._id || metier.url || ''), cmpBtn));
       }
 
       // Load similar
@@ -1302,7 +1307,7 @@ function initMetierRefApp() {
     const clearBtn = $('#btn-clear-compare');
     if (clearBtn) clearBtn.onclick = () => {
       window.comparedJobs = [];
-      localStorage.setItem('rtmc_compared', '[]');
+      localStorage.setItem('metierref_compared', '[]');
       updateCompareBar();
       $$('.btn-card-compare').forEach(b => b.classList.remove('active'));
     };
@@ -1319,10 +1324,10 @@ function initMetierRefApp() {
       window.comparedJobs.push(url);
       showToast(d.toast_added);
     }
-    localStorage.setItem('rtmc_compared', JSON.stringify(window.comparedJobs));
+    localStorage.setItem('metierref_compared', JSON.stringify(window.comparedJobs));
     updateCompareBar();
     // Sync all compare buttons for this url
-    $$(`.btn-card-compare[data-url="${url}"]`).forEach(b => b.classList.toggle('active', !has));
+    $$(`.btn-card-compare[data-key="${url}"]`).forEach(b => b.classList.toggle('active', !has));
     if (btn) {
       btn.classList.toggle('active', !has);
       if (btn.classList.contains('btn-drawer-compare')) {
@@ -1345,7 +1350,9 @@ function initMetierRefApp() {
     const c = $('#comparison-content');
     if (!c) return;
     const d = T[window.currentLang];
-    const selected = window.comparedJobs.map(url => window.allMetiers.find(m => m.url === url)).filter(Boolean);
+    const selected = window.comparedJobs.map(key => window.allMetiers.find(m =>
+      (m._id && String(m._id) === String(key)) || (m.url && m.url === key)
+    )).filter(Boolean);
 
     if (!selected.length) {
       c.innerHTML = `
@@ -1472,7 +1479,7 @@ function initMetierRefApp() {
         <div class="chat-header-info">
           <span class="chat-header-icon">🤖</span>
           <div>
-            <div class="chat-header-title">Assistant IA RTMC</div>
+            <div class="chat-header-title">Assistant IA Métiers</div>
             <div class="chat-header-sub" id="chat-mode-badge">Mode: Lexical</div>
           </div>
         </div>
@@ -1569,8 +1576,8 @@ function initMetierRefApp() {
     div.className = 'chat-msg assistant';
     const cards = sources.map(s => {
       const isEsco = s.source === 'esco' || (s.code && s.code.startsWith('ESCO')) || (s.url && s.url.includes('esco'));
-      const badgeText = isEsco ? '🇪🇺 ESCO' : '🇹🇳 RTMC';
-      const badgeClass = isEsco ? 'chat-badge-esco' : 'chat-badge-rtmc';
+      const badgeText = isEsco ? '📋 Fiche' : '📋 Fiche';
+      const badgeClass = isEsco ? 'chat-badge-rtmc' : 'chat-badge-rtmc';
       return `
       <div class="chat-source-card" data-url="${esc(s.url || '')}">
         <div class="chat-source-header">
@@ -1639,8 +1646,8 @@ function initMetierRefApp() {
         const header = `<div class="mobility-sugg-header">${matches.length} résultat${matches.length > 1 ? 's' : ''} correspondant${matches.length > 1 ? 's' : ''}</div>`;
         const items = matches.map(m => {
           const isEsco = m.source === 'esco';
-          const badgeClass = isEsco ? 'esco' : 'rtmc';
-          const badgeLabel = isEsco ? 'ESCO (Europe)' : 'RTMC (Tunisie)';
+          const badgeClass = isEsco ? 'rtmc' : 'rtmc';
+          const badgeLabel = isEsco ? 'Officiel' : 'Officiel';
           return `
             <div class="mobility-sugg-item" data-url="${esc(m.url)}">
               <div class="mobility-sugg-item-left">
@@ -1656,7 +1663,9 @@ function initMetierRefApp() {
 
         suggEl.querySelectorAll('.mobility-sugg-item').forEach(item => {
           item.onclick = () => {
-            const found = window.allMetiers.find(m => m.url === item.dataset.url);
+            const found = window.allMetiers.find(m =>
+              (m._id && String(m._id) === item.dataset.url) || (m.url && m.url === item.dataset.url)
+            );
             if (found) {
               inputEl.value = `${found.titre} (${found.code || ''})`;
               onSelect(found);
@@ -1772,9 +1781,9 @@ function initMetierRefApp() {
             Passerelle professionnelle : <span style="color:var(--primary)">${esc(data.sourceJob.titre)}</span> ➔ <span style="color:#059669">${esc(data.targetJob.titre)}</span>
           </h3>
           <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-muted)">
-            <span>Référentiel source : <strong class="chat-source-origin ${isSourceEsco ? 'chat-badge-esco' : 'chat-badge-rtmc'}">${isSourceEsco ? '🇪🇺 ESCO' : '🇹🇳 RTMC'}</strong></span>
+            <span>Source : <strong>${esc(data.sourceJob.titre)}</strong></span>
             <span>➔</span>
-            <span>Référentiel cible : <strong class="chat-source-origin ${isTargetEsco ? 'chat-badge-esco' : 'chat-badge-rtmc'}">${isTargetEsco ? '🇪🇺 ESCO' : '🇹🇳 RTMC'}</strong></span>
+            <span>Cible : <strong>${esc(data.targetJob.titre)}</strong></span>
           </div>
           <div class="mobility-badge-effort ${data.effortClass}">
             Indice d'effort d'adaptation : <strong>${esc(data.effort)}</strong>
@@ -1862,7 +1871,7 @@ function initMetierRefApp() {
                 <span class="mobility-sugg-title">${esc(m.titre)}</span>
                 <span class="mobility-sugg-code">Code : ${esc(m.code || '—')} &nbsp;·&nbsp; ${esc(m.domaineGrand || '')}</span>
               </div>
-              <span class="mobility-sugg-badge ${isEsco ? 'esco' : 'rtmc'}">${isEsco ? 'ESCO (Europe)' : 'RTMC (Tunisie)'}</span>
+              <span class="mobility-sugg-badge ${isEsco ? 'rtmc' : 'rtmc'}">${isEsco ? 'Officiel' : 'Officiel'}</span>
             </div>`;
         }).join('')}
       `;
@@ -1871,7 +1880,9 @@ function initMetierRefApp() {
 
       suggBox.querySelectorAll('.career-sugg-item').forEach(item => {
         item.onclick = () => {
-          const found = window.allMetiers.find(m => m.url === item.dataset.url);
+          const found = window.allMetiers.find(m =>
+              (m._id && String(m._id) === item.dataset.url) || (m.url && m.url === item.dataset.url)
+            );
           if (found) {
             inputJob.value = `${found.titre} (${found.code || ''})`;
             selectedCareerJob = found;
@@ -1970,7 +1981,7 @@ function initMetierRefApp() {
         <div class="career-kpi-card highlight">
           <span class="career-kpi-label">Fourchette Estimée (${esc(curLvl.label)})</span>
           <span class="career-kpi-value">${curLvl.salaryMin.toLocaleString()} – ${curLvl.salaryMax.toLocaleString()} ${currency}</span>
-          <span class="career-kpi-sub">Moyenne indicative : ~${curLvl.salaryAvg.toLocaleString()} ${currency} / ${period} · ${isEsco ? 'Référentiel ESCO' : 'Référentiel RTMC'}</span>
+          <span class="career-kpi-sub">Moyenne indicative : ~${curLvl.salaryAvg.toLocaleString()} ${currency} / ${period}</span>
         </div>
 
         <div class="career-kpi-card">

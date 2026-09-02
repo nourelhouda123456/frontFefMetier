@@ -20,7 +20,7 @@ export default function Header() {
           <span className="brand-logo">M</span>
           <div className="brand-text">
             <strong>metierRef</strong>
-            <small>Référentiel National des Métiers &amp; Compétences</small>
+            <small>Référentiel des Métiers &amp; Compétences</small>
           </div>
         </a>
         
@@ -54,7 +54,7 @@ export default function Header() {
             <span className="brand-logo">M</span>
             <div className="brand-text">
               <strong style={{ color: '#ffffff' }}>metierRef</strong>
-              <small style={{ color: 'rgba(255,255,255,0.7)' }}>Référentiel RH</small>
+              <small style={{ color: 'rgba(255,255,255,0.7)' }}>Plateforme Métiers</small>
             </div>
           </a>
           <button 

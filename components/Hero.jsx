@@ -11,7 +11,7 @@ export default function Hero() {
         {/* Capsule Badge */}
         <div className="hero-badge">
           <span className="badge-dot"></span>
-          <span data-i18n="hero_badge">Référentiel National des Métiers &amp; Compétences</span>
+          <span data-i18n="hero_badge">Référentiel des Métiers &amp; Compétences</span>
         </div>
 
         {/* Titre authentique avec touche de couleur harmonisée */}

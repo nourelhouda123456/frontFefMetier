@@ -328,6 +328,10 @@ main{width:100%;max-width:100%;overflow-x:hidden}
   font-weight: 600;
   margin-bottom: 16px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
+  word-break: break-word;
 }
 .badge-dot {
   width: 8px;
@@ -701,12 +705,13 @@ main{width:100%;max-width:100%;overflow-x:hidden}
 
 /* Chips below radar */
 .job-card-chips{
-  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;
+  display:flex;gap:6px;flex-wrap:nowrap;margin-bottom:14px;
 }
 .chip{
   display:inline-flex;align-items:center;gap:4px;
   font-size:11px;font-weight:600;padding:4px 10px;
   border-radius:var(--r-full);white-space:nowrap;
+  flex-shrink:0;
 }
 .chip-skills{color:var(--primary);background:var(--primary-light)}
 .chip-salary{color:var(--green);background:var(--green-light)}
@@ -4258,6 +4263,13 @@ main{width:100%;max-width:100%;overflow-x:hidden}
 
 /* â”€â”€ Mobiles (max-width: 480px) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (max-width: 480px) {
+  .hero-badge {
+    font-size: 10px !important;
+    letter-spacing: 0.4px !important;
+    padding: 6px 14px !important;
+    gap: 6px !important;
+  }
+
   .hero-content h1 {
     font-size: 24px;
   }
@@ -4290,13 +4302,14 @@ main{width:100%;max-width:100%;overflow-x:hidden}
   }
 
   .job-card-actions {
-    flex-direction: column;
+    flex-direction: row;
     gap: 8px;
   }
 
   .btn-card-compare {
-    width: 100%;
-    height: 36px;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
   }
 
   .skill-pill {
@@ -6233,6 +6246,10 @@ body:has(.admin-root) {
   border-radius: 9999px;
   margin-bottom: 20px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
+  word-break: break-word;
 }
 
 .badge-dot {
@@ -6664,7 +6681,7 @@ body:has(.admin-root) {
 
 .job-card-chips {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
   margin-bottom: 18px;
 }
@@ -6677,6 +6694,8 @@ body:has(.admin-root) {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .chip-skills {

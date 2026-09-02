@@ -21,7 +21,7 @@ export default function Footer() {
                 <span className="brand-logo">M</span>
                 <strong>metierRef</strong>
               </div>
-              <p data-i18n="footer_desc">Plateforme d'exploration et d'orientation professionnelle basée sur un référentiel unifié des métiers et compétences.</p>
+              <p data-i18n="footer_desc">Plateforme d'exploration et d'orientation professionnelle. Consultez les fiches métiers, compétences et grilles salariales.</p>
             </div>
             <div>
               <h4>Navigation</h4>
@@ -31,14 +31,14 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h4 data-i18n="footer_sources">Référentiel</h4>
+              <h4 data-i18n="footer_sources">À propos</h4>
               <p style={{ fontSize: '13px', lineHeight: 1.6, opacity: 0.7 }} data-i18n="footer_legal">
-                Base propriétaire unifiée des métiers, compétences clés et grilles de qualification.
+                Données officielles des métiers, compétences clés et grilles de qualification.
               </p>
             </div>
           </div>
           <div className="footer-bottom">
-            <span>© 2026 metierRef · Référentiel National des Métiers &amp; Compétences</span>
+            <span>© 2026 metierRef · Référentiel des Métiers &amp; Compétences</span>
             <a href="/admin/login" className="footer-admin-link" title="Accès réservé aux administrateurs">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
