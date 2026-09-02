@@ -947,7 +947,7 @@ function initMetierRefApp() {
                 </div>
 
                 <div class="formal-doc-actions">
-                  <a href="${esc(metier.url)}" target="_blank" rel="noreferrer" class="btn-formal-outline">📄 Voir la fiche officielle ↗</a>
+                  <button class="btn-formal-outline btn-pdf-download" onclick="window._downloadPDF(event)" data-url="${esc(metier.url)}" data-titre="${esc(metier.titre)}">📥 Télécharger PDF</button>
                   <button class="btn-formal-primary btn-drawer-compare" data-url="${esc(metier.url)}">⚖ ${d.btn_compare_label}</button>
                 </div>
               </div>
@@ -2158,4 +2158,63 @@ function initMetierRefApp() {
   }
   window.initMetierRefApp = initMetierRefApp;
 })();
+
+// ─── PDF Download (global scope) ─────────────────────────────────────────────
+window._downloadPDF = function(e) {
+  var btn = e.currentTarget;
+  var titre = (btn.getAttribute('data-titre') || 'Fiche_Metier').replace(/[^a-zA-Z0-9_\-\u00C0-\u024F ]/g, '').trim().replace(/\s+/g, '_');
+
+  var drawerContent = document.querySelector('.drawer-sheet');
+  if (!drawerContent) { alert('Fiche non disponible.'); return; }
+
+  // Show loading state
+  var originalText = btn.innerHTML;
+  btn.innerHTML = '⏳ Génération...';
+  btn.disabled = true;
+
+  // Clone the drawer content and expand all sections
+  var clone = drawerContent.cloneNode(true);
+  clone.querySelectorAll('.btn-drawer-compare, .btn-pdf-download, .drawer-close, .drawer-job-actions, .scroll-to-top').forEach(function(el) { el.remove(); });
+  clone.querySelectorAll('.formal-section-content').forEach(function(el) {
+    el.style.display = 'block';
+    el.style.maxHeight = 'none';
+    el.style.overflow = 'visible';
+  });
+  clone.querySelectorAll('.formal-section-toggle').forEach(function(el) { el.style.display = 'none'; });
+  clone.style.cssText = 'position:static;width:100%;max-width:100%;box-shadow:none;border:none;transform:none;border-radius:0;';
+
+  // Inject html2pdf.js if not already loaded
+  function doDownload() {
+    var opt = {
+      margin: [10, 10, 10, 10],
+      filename: titre + '.pdf',
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+    html2pdf().set(opt).from(clone).save().then(function() {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }).catch(function(err) {
+      console.error('PDF error:', err);
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    });
+  }
+
+  if (typeof html2pdf !== 'undefined') {
+    doDownload();
+  } else {
+    var script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+    script.onload = function() { doDownload(); };
+    script.onerror = function() {
+      alert('Impossible de charger la librairie PDF. Vérifiez votre connexion.');
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    };
+    document.head.appendChild(script);
+  }
+};
 

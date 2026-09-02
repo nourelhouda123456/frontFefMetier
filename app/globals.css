@@ -7369,3 +7369,19 @@ body:has(.admin-root) {
     height: 44px;
   }
 }
+
+/* -- PDF Download Button -- */
+.btn-pdf-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-pdf-download:hover {
+  background: #EF7408 !important;
+  color: #fff !important;
+  border-color: #EF7408 !important;
+}
