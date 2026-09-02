@@ -1,4 +1,5 @@
 import './globals.css';
+import ScrollToTop from '../components/ScrollToTop';
 
 export const metadata = {
   title: 'metierRef | Référentiel des Métiers & Compétences',
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         {children}
+        <ScrollToTop />
       </body>
     </html>
   );
