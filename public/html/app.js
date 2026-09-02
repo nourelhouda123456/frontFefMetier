@@ -869,6 +869,7 @@ function initMetierRefApp() {
       (m.url && m.url === key)
     );
     if (!metier) { showToast('Fiche introuvable.', 'error'); return; }
+    window._currentDrawerMetier = metier; // Store for PDF export
 
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -2159,62 +2160,342 @@ function initMetierRefApp() {
   window.initMetierRefApp = initMetierRefApp;
 })();
 
-// ─── PDF Download (global scope) ─────────────────────────────────────────────
+// ─── PDF Download — Document institutionnel formel ────────────────────────────
 window._downloadPDF = function(e) {
   var btn = e.currentTarget;
-  var titre = (btn.getAttribute('data-titre') || 'Fiche_Metier').replace(/[^a-zA-Z0-9_\-\u00C0-\u024F ]/g, '').trim().replace(/\s+/g, '_');
+  var metier = window._currentDrawerMetier;
+  if (!metier) {
+    var titreAttr = btn.getAttribute('data-titre') || '';
+    metier = (window.allMetiers || []).find(function(m) { return m.titre === titreAttr; });
+  }
+  if (!metier) { alert('Fiche non disponible. Rouvrez la fiche metier.'); return; }
 
-  var drawerContent = document.querySelector('.drawer-sheet');
-  if (!drawerContent) { alert('Fiche non disponible.'); return; }
-
-  // Show loading state
-  var originalText = btn.innerHTML;
+  var titre = (metier.titre || 'Fiche_Metier').replace(/[<>:"/\\|?*]/g, '').trim();
+  var filename = titre.replace(/\s+/g, '_') + '.pdf';
+  var originalHTML = btn.innerHTML;
   btn.innerHTML = '⏳ Génération...';
   btn.disabled = true;
 
-  // Clone the drawer content and expand all sections
-  var clone = drawerContent.cloneNode(true);
-  clone.querySelectorAll('.btn-drawer-compare, .btn-pdf-download, .drawer-close, .drawer-job-actions, .scroll-to-top').forEach(function(el) { el.remove(); });
-  clone.querySelectorAll('.formal-section-content').forEach(function(el) {
-    el.style.display = 'block';
-    el.style.maxHeight = 'none';
-    el.style.overflow = 'visible';
-  });
-  clone.querySelectorAll('.formal-section-toggle').forEach(function(el) { el.style.display = 'none'; });
-  clone.style.cssText = 'position:static;width:100%;max-width:100%;box-shadow:none;border:none;transform:none;border-radius:0;';
-
-  // Inject html2pdf.js if not already loaded
-  function doDownload() {
-    var opt = {
-      margin: [10, 10, 10, 10],
-      filename: titre + '.pdf',
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, logging: false },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-    };
-    html2pdf().set(opt).from(clone).save().then(function() {
-      btn.innerHTML = originalText;
-      btn.disabled = false;
-    }).catch(function(err) {
-      console.error('PDF error:', err);
-      btn.innerHTML = originalText;
-      btn.disabled = false;
-    });
+  function esc(s) {
+    return (s || '').toString()
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 
-  if (typeof html2pdf !== 'undefined') {
-    doDownload();
-  } else {
-    var script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-    script.onload = function() { doDownload(); };
-    script.onerror = function() {
-      alert('Impossible de charger la librairie PDF. Vérifiez votre connexion.');
-      btn.innerHTML = originalText;
+  function buildPDFHTML(m) {
+    var sfList = m.competencesTechniquesSavoirFaire || [];
+    var svList = m.competencesTechniquesSavoir || [];
+    var ssList = m.competencesComportementales || [];
+    var snList = m.competencesNumeriques || [];
+    var totalSkills = sfList.length + svList.length + ssList.length + snList.length;
+
+    var baseMin = 950, baseMax = 1650;
+    if (m.salary && m.salary.salaryMin) {
+      baseMin = m.salary.salaryMin;
+      baseMax = m.salary.salaryMax;
+    } else {
+      var c0 = (m.code || '').charAt(0).toUpperCase();
+      if (c0 === 'M') { baseMin = 1400; baseMax = 2500; }
+      else if (c0 === 'I') { baseMin = 1300; baseMax = 2200; }
+      else if (c0 === 'J') { baseMin = 1200; baseMax = 2100; }
+      else if (c0 === 'A') { baseMin = 750;  baseMax = 1200; }
+    }
+
+    var today = new Date();
+    var dateStr = today.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+    var refNum = 'REF-' + (m.code || '000') + '-2026';
+
+    var css = `
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: "Times New Roman", Times, serif; background: #fff; color: #1a1a1a; width: 794px; font-size: 13px; line-height: 1.5; }
+      h1, h2, h3, h4 { font-family: Arial, Helvetica, sans-serif; }
+      .page { width: 794px; padding: 0; }
+      .doc-header { background: #0f223d; color: #fff; padding: 0; }
+      .doc-header-top { display: flex; align-items: stretch; border-bottom: 3px solid #EF7408; }
+      .doc-header-logo { background: #EF7408; width: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 18px 10px; flex-shrink: 0; }
+      .doc-header-logo .logo-text { font-family: Arial, sans-serif; font-size: 9px; font-weight: 700; color: #fff; text-align: center; text-transform: uppercase; letter-spacing: .5px; margin-top: 6px; }
+      .doc-header-logo .logo-symbol { font-size: 28px; color: #fff; line-height: 1; }
+      .doc-header-main { flex: 1; padding: 20px 24px; }
+      .doc-header-type { font-size: 9px; font-weight: 700; color: rgba(255,255,255,.6); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+      .doc-header-title { font-size: 22px; font-weight: 900; color: #fff; line-height: 1.2; margin-bottom: 8px; font-family: Arial, sans-serif; }
+      .doc-header-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+      .doc-header-meta span { font-size: 10px; color: rgba(255,255,255,.75); display: flex; align-items: center; gap: 4px; }
+      .doc-header-meta strong { color: #EF7408; }
+      .doc-header-ref { background: rgba(0,0,0,.3); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+      .doc-header-ref span { font-size: 10px; color: rgba(255,255,255,.65); font-family: Arial, sans-serif; letter-spacing: .5px; }
+      .doc-header-ref .ref-badge { background: #EF7408; color: #fff; font-size: 9px; font-weight: 700; padding: 3px 10px; border-radius: 3px; letter-spacing: 1px; }
+      .stats-strip { display: flex; border-bottom: 2px solid #e8eaf0; }
+      .stat-box { flex: 1; text-align: center; padding: 14px 8px; border-right: 1px solid #e8eaf0; }
+      .stat-box:last-child { border-right: none; }
+      .stat-num { font-size: 22px; font-weight: 900; color: #0f223d; font-family: Arial, sans-serif; line-height: 1; }
+      .stat-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: .8px; color: #888; margin-top: 3px; font-family: Arial, sans-serif; }
+      .doc-body { padding: 28px 36px; }
+      .section { margin-bottom: 26px; page-break-inside: avoid; }
+      .section-header { display: flex; align-items: center; gap: 0; margin-bottom: 14px; }
+      .section-num { background: #0f223d; color: #fff; font-size: 9px; font-weight: 700; font-family: Arial, sans-serif; padding: 5px 10px; letter-spacing: 1px; }
+      .section-title { flex: 1; background: #f4f6f8; border-top: 2px solid #0f223d; border-bottom: 1px solid #d0d5e0; padding: 6px 14px; font-size: 12px; font-weight: 700; color: #0f223d; text-transform: uppercase; letter-spacing: .8px; font-family: Arial, sans-serif; }
+      .section-title-accent { background: #EF7408; color: #fff; font-size: 9px; font-weight: 700; font-family: Arial, sans-serif; padding: 6px 12px; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; border-top: 2px solid #EF7408; }
+      .desc-text { font-size: 12.5px; line-height: 1.75; color: #2d2d2d; text-align: justify; margin-bottom: 14px; }
+      .appellation-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+      .appellation-item { border: 1px solid #c8cfd8; color: #333; padding: 3px 10px; font-size: 11px; font-family: Arial, sans-serif; }
+      .salary-table { width: 100%; border-collapse: collapse; border: 1px solid #c8cfd8; }
+      .salary-table th { background: #0f223d; color: #fff; font-size: 10px; padding: 8px 10px; text-align: center; font-family: Arial, sans-serif; letter-spacing: .5px; border: 1px solid #1a3a6e; }
+      .salary-table td { padding: 8px 10px; text-align: center; font-size: 11px; border: 1px solid #d5dae3; font-family: Arial, sans-serif; }
+      .salary-table tr:nth-child(even) td { background: #f7f9fc; }
+      .salary-table .sal-range { font-weight: 700; color: #0f223d; font-size: 12px; }
+      .salary-table .sal-highlight td { background: #fff8f0 !important; }
+      .competence-block { margin-bottom: 18px; border: 1px solid #d0d5e0; }
+      .competence-block-header { background: #0f223d; color: #fff; padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; }
+      .competence-block-header h4 { font-size: 11px; font-weight: 700; font-family: Arial, sans-serif; text-transform: uppercase; letter-spacing: .8px; margin: 0; }
+      .competence-block-header .count-badge { background: #EF7408; color: #fff; font-size: 9px; font-weight: 700; padding: 2px 8px; font-family: Arial, sans-serif; }
+      .competence-block.sf .competence-block-header { background: #0f223d; }
+      .competence-block.sv .competence-block-header { background: #1a4a7a; }
+      .competence-block.ss .competence-block-header { background: #2a3a5a; }
+      .competence-block.sn .competence-block-header { background: #0a3050; }
+      .competence-grid { display: grid; grid-template-columns: 1fr 1fr; }
+      .competence-item { display: flex; align-items: flex-start; gap: 8px; padding: 7px 12px; border-bottom: 1px solid #eef0f4; border-right: 1px solid #eef0f4; font-size: 11.5px; font-family: Arial, sans-serif; line-height: 1.4; }
+      .competence-item:nth-child(2n) { border-right: none; }
+      .competence-num { color: #0f223d; font-weight: 700; font-size: 10px; min-width: 22px; margin-top: 1px; opacity: .7; }
+      .spec-table { width: 100%; border-collapse: collapse; border: 1px solid #c8cfd8; }
+      .spec-table th { background: #f4f6f8; color: #0f223d; font-size: 11px; padding: 9px 14px; text-align: left; font-family: Arial, sans-serif; font-weight: 700; width: 32%; border: 1px solid #c8cfd8; border-right: 2px solid #0f223d; }
+      .spec-table td { padding: 9px 14px; font-size: 11.5px; border: 1px solid #c8cfd8; color: #333; line-height: 1.55; }
+      .spec-table tr:nth-child(even) td { background: #fafbfd; }
+      .access-box { border: 1px solid #c8cfd8; border-left: 4px solid #0f223d; background: #f9fafc; padding: 16px 18px; }
+      .access-box p { font-size: 12px; line-height: 1.75; color: #2d2d2d; text-align: justify; }
+      .doc-footer { border-top: 2px solid #0f223d; margin: 0 36px 28px; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+      .doc-footer span { font-size: 9px; color: #888; font-family: Arial, sans-serif; letter-spacing: .3px; }
+      .doc-footer .footer-ref { color: #0f223d; font-weight: 700; }
+    `;
+
+    function competenceBlock(list, cls, label) {
+      if (!list.length) return '';
+      var items = list.map(function(s, i) {
+        return '<div class="competence-item">'
+          + '<span class="competence-num">' + String(i + 1).padStart(2, '0') + '</span>'
+          + '<span>' + esc(s) + '</span>'
+          + '</div>';
+      }).join('');
+      return '<div class="competence-block ' + cls + '">'
+        + '<div class="competence-block-header">'
+        + '<h4>' + label + '</h4>'
+        + '<span class="count-badge">' + list.length + '</span>'
+        + '</div>'
+        + '<div class="competence-grid">' + items + '</div>'
+        + '</div>';
+    }
+
+    var levels = [
+      { id: 'debutant', label: 'Débutant',  exp: '0 – 1 an',  mult: 0.80 },
+      { id: 'junior',   label: 'Junior',    exp: '1 – 3 ans', mult: 1.00 },
+      { id: 'confirme', label: 'Confirmé',  exp: '3 – 5 ans', mult: 1.35 },
+      { id: 'senior',   label: 'Senior',    exp: '5 – 8 ans', mult: 1.80 },
+      { id: 'expert',   label: 'Expert',    exp: '8+ ans',    mult: 2.40 }
+    ];
+    var salRows = levels.map(function(l) {
+      var mn = Math.round(baseMin * l.mult).toLocaleString('fr-FR');
+      var mx = Math.round(baseMax * l.mult).toLocaleString('fr-FR');
+      var isJunior = l.id === 'junior';
+      return '<tr' + (isJunior ? ' class="sal-highlight"' : '') + '>'
+        + '<td>' + l.label + '</td>'
+        + '<td>' + l.exp + '</td>'
+        + '<td class="sal-range">' + mn + ' TND</td>'
+        + '<td class="sal-range">' + mx + ' TND</td>'
+        + '<td style="font-size:10px;color:#666;">/mois · brut</td>'
+        + '</tr>';
+    }).join('');
+
+    var envSt   = (m.environnementStructures || []).join(', ') || 'Non renseigné au référentiel';
+    var envSec  = (m.environnementSecteurs || []).join(', ')   || 'Non renseigné au référentiel';
+    var envCond = (m.environnementConditions || []).join(', ') || 'Non renseigné au référentiel';
+
+    function section(num, title, accentLabel, body) {
+      return '<div class="section">'
+        + '<div class="section-header">'
+        + '<span class="section-num">ART. ' + num + '</span>'
+        + '<span class="section-title">' + title + '</span>'
+        + (accentLabel ? '<span class="section-title-accent">' + accentLabel + '</span>' : '')
+        + '</div>'
+        + body
+        + '</div>';
+    }
+
+    var appellationsHTML = m.appellations && m.appellations.length
+      ? '<div style="margin-top:12px;"><div style="font-size:10px;font-family:Arial,sans-serif;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px;">Appellations & Intitulés associés</div>'
+        + '<div class="appellation-grid">' + m.appellations.map(function(a){ return '<span class="appellation-item">' + esc(a) + '</span>'; }).join('') + '</div>'
+        + '</div>'
+      : '';
+
+    var s01 = section('01', 'Désignation et Définition du Métier', '',
+      '<p class="desc-text">' + esc(m.definition || m.resume || 'Aucune description spécifique fournie dans ce référentiel.') + '</p>'
+      + appellationsHTML
+    );
+
+    var s02 = section('02', 'Estimation Salariale par Niveau d\'Expérience', 'Indicatif - TND',
+      '<table class="salary-table">'
+      + '<thead><tr><th>Niveau</th><th>Expérience</th><th>Salaire Min.</th><th>Salaire Max.</th><th>Unité</th></tr></thead>'
+      + '<tbody>' + salRows + '</tbody>'
+      + '</table>'
+      + '<p style="font-size:9px;color:#999;font-family:Arial,sans-serif;margin-top:6px;font-style:italic;">* Données indicatives issues du référentiel. Les salaires effectifs peuvent varier selon les conventions collectives et le secteur d\'activité.</p>'
+    );
+
+    var s03 = section('03', 'Référentiel Détaillé des Compétences', totalSkills + ' Compétences',
+      competenceBlock(sfList, 'sf', 'I. Savoir-faire techniques et opérationnels')
+      + competenceBlock(svList, 'sv', 'II. Connaissances théoriques et savoirs associés')
+      + competenceBlock(ssList, 'ss', 'III. Compétences comportementales (Aptitudes transversales)')
+      + competenceBlock(snList, 'sn', 'IV. Compétences numériques et maîtrise des outils')
+      + (!totalSkills ? '<p style="color:#999;font-size:12px;font-style:italic;text-align:center;padding:16px;">Aucune compétence renseignée pour ce métier.</p>' : '')
+    );
+
+    var s04 = section('04', 'Environnement et Conditions d\'Exercice', '',
+      '<table class="spec-table"><tbody>'
+      + '<tr><th>Structures d\'exercice</th><td>' + esc(envSt) + '</td></tr>'
+      + '<tr><th>Secteurs d\'activité</th><td>' + esc(envSec) + '</td></tr>'
+      + '<tr><th>Conditions & contraintes</th><td>' + esc(envCond) + '</td></tr>'
+      + '</tbody></table>'
+    );
+
+    var s05 = section('05', 'Conditions d\'Accès à l\'Emploi et Qualifications Requises', '',
+      '<div class="access-box"><p>' + esc(m.accesEmploi || 'L\'accès à cet emploi est soumis aux règles de qualification, de diplôme ou d\'expérience professionnelle exigées par le référentiel officiel.') + '</p></div>'
+    );
+
+    return '<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8">'
+      + '<style>' + css + '</style>'
+      + '</head><body><div class="page">'
+      + '<div class="doc-header">'
+      + '<div class="doc-header-top">'
+      + '<div class="doc-header-logo">'
+      + '<div class="logo-symbol">📄</div>'
+      + '<div class="logo-text">Référentiel<br>National</div>'
+      + '</div>'
+      + '<div class="doc-header-main">'
+      + '<div class="doc-header-type">Fiche Officielle du Référentiel National des Métiers</div>'
+      + '<div class="doc-header-title">' + esc(m.titre) + '</div>'
+      + '<div class="doc-header-meta">'
+      + '<span>Code : <strong>' + esc(m.code) + '</strong></span>'
+      + '<span>Domaine : <strong>' + esc(m.domaineGrand) + '</strong></span>'
+      + (m.domaineProfessionnel ? '<span>Secteur : <strong>' + esc(m.domaineProfessionnel) + '</strong></span>' : '')
+      + '</div>'
+      + '</div>'
+      + '</div>'
+      + '<div class="doc-header-ref">'
+      + '<span>' + dateStr + '</span>'
+      + '<span>Edition 2026</span>'
+      + '<span class="ref-badge">' + refNum + '</span>'
+      + '</div>'
+      + '</div>'
+      + '<div class="stats-strip">'
+      + '<div class="stat-box"><div class="stat-num">' + sfList.length + '</div><div class="stat-lbl">Savoir-faire</div></div>'
+      + '<div class="stat-box"><div class="stat-num">' + svList.length + '</div><div class="stat-lbl">Savoirs</div></div>'
+      + '<div class="stat-box"><div class="stat-num">' + ssList.length + '</div><div class="stat-lbl">Soft Skills</div></div>'
+      + '<div class="stat-box"><div class="stat-num">' + snList.length + '</div><div class="stat-lbl">Numérique</div></div>'
+      + '<div class="stat-box" style="background:#0f223d;"><div class="stat-num" style="color:#EF7408;">' + totalSkills + '</div><div class="stat-lbl" style="color:rgba(255,255,255,.7);">Total</div></div>'
+      + '</div>'
+      + '<div class="doc-body">'
+      + s01 + s02 + s03 + s04 + s05
+      + '</div>'
+      + '<div class="doc-footer">'
+      + '<span>Référentiel National des Métiers — Document officiel à usage professionnel</span>'
+      + '<span class="footer-ref">' + refNum + '</span>'
+      + '<span>Page générée le ' + dateStr + '</span>'
+      + '</div>'
+      + '</div></body></html>';
+  }
+
+  function loadScript(url, cb) {
+    if (document.querySelector('script[data-pdf-lib="' + url + '"]')) { cb(); return; }
+    var s = document.createElement('script');
+    s.setAttribute('data-pdf-lib', url);
+    s.src = url;
+    s.onload = cb;
+    s.onerror = function() {
+      alert('Erreur réseau. Vérifiez votre connexion.');
+      btn.innerHTML = originalHTML;
       btn.disabled = false;
     };
-    document.head.appendChild(script);
+    document.head.appendChild(s);
   }
+
+  function generate() {
+    var htmlContent = buildPDFHTML(metier);
+
+    var iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;top:-99999px;left:0;width:794px;height:2000px;border:none;z-index:-9999;visibility:hidden;';
+    document.body.appendChild(iframe);
+
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(htmlContent);
+    iframe.contentDocument.close();
+
+    setTimeout(function() {
+      var body = iframe.contentDocument.body;
+      var captureH = body.scrollHeight || 2000;
+      iframe.style.height = captureH + 'px';
+
+      setTimeout(function() {
+        html2canvas(body, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          backgroundColor: '#ffffff',
+          scrollX: 0, scrollY: 0,
+          width: 794,
+          height: captureH,
+          windowWidth: 794,
+          windowHeight: captureH
+        }).then(function(canvas) {
+          document.body.removeChild(iframe);
+
+          if (canvas.width < 10 || canvas.height < 10) {
+            alert('Erreur: contenu vide capturé.');
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+            return;
+          }
+
+          var jsPDF = window.jspdf.jsPDF;
+          var pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
+
+          var pageW = 210, pageH = 297;
+          var imgW = canvas.width, imgH = canvas.height;
+          var mmPerPx = pageW / imgW;
+          var pxPerPage = pageH / mmPerPx;
+
+          var srcY = 0, pageNum = 0;
+          while (srcY < imgH) {
+            if (pageNum > 0) pdf.addPage();
+            var slicePx = Math.min(pxPerPage, imgH - srcY);
+            var tmp = document.createElement('canvas');
+            tmp.width = imgW;
+            tmp.height = Math.ceil(slicePx);
+            var ctx = tmp.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, tmp.width, tmp.height);
+            ctx.drawImage(canvas, 0, Math.floor(srcY), imgW, Math.ceil(slicePx), 0, 0, imgW, Math.ceil(slicePx));
+            pdf.addImage(tmp.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageW, slicePx * mmPerPx, '', 'FAST');
+            srcY += slicePx;
+            pageNum++;
+          }
+
+          pdf.save(filename);
+          btn.innerHTML = originalHTML;
+          btn.disabled = false;
+
+        }).catch(function(err) {
+          document.body.removeChild(iframe);
+          console.error(err);
+          btn.innerHTML = originalHTML;
+          btn.disabled = false;
+          alert('Erreur: ' + err.message);
+        });
+      }, 800);
+    }, 500);
+  }
+
+  var h2cUrl  = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+  var pdfUrl  = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  loadScript(h2cUrl, function() { loadScript(pdfUrl, generate); });
 };
 
