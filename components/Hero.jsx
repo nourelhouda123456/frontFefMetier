@@ -49,7 +49,7 @@ export default function Hero() {
 
         {/* RESULTS INFO BAR */}
         <div className="results-bar" id="results-bar">
-          <span className="results-count" id="results-count">3 468 métiers disponibles</span>
+          <span className="results-count" id="results-count">3 346 métiers disponibles</span>
           <button className="btn-clear-filters" id="btn-clear-filters" style={{ display: 'none' }} data-i18n="btn_clear">✕ Effacer les filtres</button>
         </div>
       </div>

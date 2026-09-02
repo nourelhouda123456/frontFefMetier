@@ -1,4 +1,4 @@
-// metierRef — app.js (Complete Rewrite)
+﻿// metierRef — app.js (Complete Rewrite)
 (() => {
 function initMetierRefApp() {
   if (window._metierRefInitialized) return;
@@ -13,7 +13,7 @@ function initMetierRefApp() {
   let activeSearchQuery = '';
   let activeSkillFilter = null;
   let visibleCount      = 12;
-  let activeSourceFilter = 'all'; // 'all', 'rtmc', 'esco'
+  let activeSourceFilter = 'rtmc'; // toujours RTMC uniquement
   let activeViewMode     = 'grid'; // 'grid', 'constellation'
 
   // ─── Helpers ───────────────────────────────────────────────────────
@@ -91,12 +91,12 @@ function initMetierRefApp() {
       nav_home:'Accueil', nav_skills:'Compétences', nav_salary:'Niveaux et Rémunérations IA', nav_mobility:'Mobilité & Reconversion', nav_about:'À propos',
       btn_explore:'Explorer les métiers', btn_search:'Rechercher',
       btn_discover_skills:'Découvrir les compétences', btn_clear:'✕ Effacer les filtres',
-      hero_badge:'🇹🇳 RTMC (Tunisie) & 🇪🇺 ESCO (Europe) · Référentiel Commun',
+      hero_badge:'🇹🇳 Référentiel National des Métiers et Compétences (RTMC)',
       hero_title:'Découvrez le métier qui vous correspond',
-      hero_subtitle:'Explorez les métiers, les compétences et les passerelles des référentiels RTMC (Tunisie 🇹🇳) et ESCO (Europe 🇪🇺).',
-      search_placeholder:'Rechercher un métier, une compétence, un code (RTMC / ESCO)…',
+      hero_subtitle:'Explorez les métiers, les compétences et les passerelles de carrière au sein du référentiel officiel RTMC (Tunisie 🇹🇳).',
+      search_placeholder:'Rechercher un métier, une compétence, un code (RTMC)…',
       sectors_title:'Explorez par grand domaine', sectors_subtitle:'Cliquez sur un secteur pour filtrer les métiers.',
-      jobs_title:'Découvrez les métiers', jobs_subtitle:'Répertoire officiel unifié des métiers RTMC (Tunisie 🇹🇳) et ESCO (Europe 🇪🇺).',
+      jobs_title:'Découvrez les métiers', jobs_subtitle:'Répertoire officiel des métiers RTMC (Tunisie 🇹🇳).',
       jobs_count_suffix:' métiers disponibles',
       card_skills_count:'compétences', card_salary_est:'TND / mois', card_salary_note:'*Basé sur données INS 2022',
       skills_title:'Les compétences au cœur de l\'orientation',
@@ -336,13 +336,8 @@ function initMetierRefApp() {
       });
       window.allSkills = Array.from(sk).sort((a, b) => a.localeCompare(b, 'fr'));
 
-      // Count sources
-      const rtmcCount = window.allMetiers.filter(m => m.source === 'rtmc' || !m.source).length;
-      const escoCount = window.allMetiers.filter(m => m.source === 'esco').length;
-
       if ($('#count-all')) $('#count-all').textContent = window.allMetiers.length.toLocaleString('fr-FR');
-      if ($('#count-rtmc')) $('#count-rtmc').textContent = rtmcCount.toLocaleString('fr-FR');
-      if ($('#count-esco')) $('#count-esco').textContent = escoCount.toLocaleString('fr-FR');
+      if ($('#kpi-total-jobs')) $('#kpi-total-jobs').textContent = window.allMetiers.length.toLocaleString('fr-FR');
 
       showShimmer(false);
       setupToolbarControls();
@@ -475,10 +470,8 @@ function initMetierRefApp() {
 
     const d = T[window.currentLang];
 
-    // Filter by Source
-    let list = window.allMetiers;
-    if (activeSourceFilter === 'rtmc') list = list.filter(m => m.source === 'rtmc' || !m.source);
-    if (activeSourceFilter === 'esco') list = list.filter(m => m.source === 'esco');
+    // Filter by Source (RTMC uniquement)
+    let list = window.allMetiers.filter(m => m.source === 'rtmc' || !m.source);
 
     if (selectedDomain)    list = list.filter(m => m.domaineGrand === selectedDomain);
     if (activeSkillFilter) {
@@ -2162,4 +2155,5 @@ function initMetierRefApp() {
   }
   window.initMetierRefApp = initMetierRefApp;
 })();
+
 
