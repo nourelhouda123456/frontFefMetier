@@ -949,7 +949,7 @@ function initMetierRefApp() {
 
                 <div class="formal-doc-actions">
                   <button class="btn-formal-outline btn-pdf-download" onclick="window._downloadPDF(event)" data-url="${esc(metier.url)}" data-titre="${esc(metier.titre)}">📥 Télécharger PDF</button>
-                  <button class="btn-formal-primary btn-drawer-compare" data-url="${esc(metier.url)}">⚖ ${d.btn_compare_label}</button>
+                  <button class="btn-formal-primary btn-drawer-compare" data-key="${esc(metier._id || metier.code || metier.url || '')}">⚖ ${d.btn_compare_label}</button>
                 </div>
               </div>
 
@@ -1242,7 +1242,7 @@ function initMetierRefApp() {
       }
 
       // Load similar
-      loadSimilar(metier.url);
+      loadSimilar(metier._id || metier.code || metier.url);
 
       // Accordion Toggle 'Voir détails' / 'Masquer détails'
       content.querySelectorAll('.formal-accordion-section').forEach(section => {
@@ -1379,7 +1379,7 @@ function initMetierRefApp() {
               <div class="compare-col-header">
                 <div class="compare-header-top">
                   <span class="drawer-code-badge">${esc(m.code)}</span>
-                  <button class="btn-remove-cmp" data-url="${esc(m.url)}" title="Retirer de la comparaison" aria-label="Retirer">✕</button>
+                  <button class="btn-remove-cmp" data-key="${esc(m._id || m.id || m.code || m.url || '')}" title="Retirer de la comparaison" aria-label="Retirer">✕</button>
                 </div>
                 <h3 class="compare-job-title">${esc(m.titre)}</h3>
                 <div class="compare-domain">
@@ -1445,7 +1445,7 @@ function initMetierRefApp() {
               </div>` : ''}
 
               <div class="compare-col-footer">
-                <button class="btn-primary btn-open-drawer-cmp" data-url="${esc(m.url)}">
+                <button class="btn-primary btn-open-drawer-cmp" data-key="${esc(m._id || m.id || m.code || m.url || '')}">
                   Voir la fiche complète →
                 </button>
               </div>
@@ -1580,7 +1580,7 @@ function initMetierRefApp() {
       const badgeText = isEsco ? '📋 Fiche' : '📋 Fiche';
       const badgeClass = isEsco ? 'chat-badge-rtmc' : 'chat-badge-rtmc';
       return `
-      <div class="chat-source-card" data-url="${esc(s.url || '')}">
+      <div class="chat-source-card" data-key="${esc(s._id || s.id || s.code || s.url || '')}">
         <div class="chat-source-header">
           <span class="chat-source-code">${esc(s.code || '')}</span>
           <span class="chat-source-origin ${badgeClass}">${badgeText}</span>
@@ -1650,7 +1650,7 @@ function initMetierRefApp() {
           const badgeClass = isEsco ? 'rtmc' : 'rtmc';
           const badgeLabel = isEsco ? 'Officiel' : 'Officiel';
           return `
-            <div class="mobility-sugg-item" data-url="${esc(m.url)}">
+            <div class="mobility-sugg-item" data-key="${esc(m._id || m.id || m.code || m.url || ' ')}" data-titre="${esc(m.titre || '')}">
               <div class="mobility-sugg-item-left">
                 <span class="mobility-sugg-title">${esc(m.titre)}</span>
                 <span class="mobility-sugg-code">Code : ${esc(m.code || '—')} &nbsp;·&nbsp; ${esc(m.domaineGrand || m.domaine || '')}</span>
@@ -1664,8 +1664,13 @@ function initMetierRefApp() {
 
         suggEl.querySelectorAll('.mobility-sugg-item').forEach(item => {
           item.onclick = () => {
-            const found = window.allMetiers.find(m =>
-              (m._id && String(m._id) === item.dataset.url) || (m.url && m.url === item.dataset.url)
+            const k = item.dataset.key;
+            const found = (window.allMetiers || []).find(m =>
+              (m._id && String(m._id) === k) ||
+              (m.id && String(m.id) === k) ||
+              (m.code && String(m.code) === k) ||
+              (m.url && m.url === k) ||
+              (m.titre && m.titre === item.dataset.titre)
             );
             if (found) {
               inputEl.value = `${found.titre} (${found.code || ''})`;
@@ -1867,7 +1872,7 @@ function initMetierRefApp() {
         ${matches.map(m => {
           const isEsco = m.source === 'esco';
           return `
-            <div class="career-sugg-item" data-url="${esc(m.url)}">
+            <div class="career-sugg-item" data-key="${esc(m._id || m.id || m.code || m.url || ' ')}" data-titre="${esc(m.titre || '')}">
               <div class="mobility-sugg-item-left">
                 <span class="mobility-sugg-title">${esc(m.titre)}</span>
                 <span class="mobility-sugg-code">Code : ${esc(m.code || '—')} &nbsp;·&nbsp; ${esc(m.domaineGrand || '')}</span>
@@ -1881,9 +1886,14 @@ function initMetierRefApp() {
 
       suggBox.querySelectorAll('.career-sugg-item').forEach(item => {
         item.onclick = () => {
-          const found = window.allMetiers.find(m =>
-              (m._id && String(m._id) === item.dataset.url) || (m.url && m.url === item.dataset.url)
-            );
+          const k = item.dataset.key;
+          const found = (window.allMetiers || []).find(m =>
+            (m._id && String(m._id) === k) ||
+            (m.id && String(m.id) === k) ||
+            (m.code && String(m.code) === k) ||
+            (m.url && m.url === k) ||
+            (m.titre && m.titre === item.dataset.titre)
+          );
           if (found) {
             inputJob.value = `${found.titre} (${found.code || ''})`;
             selectedCareerJob = found;
